@@ -1,6 +1,6 @@
 const user = require('../../users')
 const express=require('express')
-
+const uuid=require('uuid')
 const router=express.Router()
 //Get all members
 
@@ -19,6 +19,50 @@ else
 })
 
 //Creating a member
+ 
+router.post('/',(req,res)=>{
+    const newMember={
+        'id':uuid.v4(),
+        'name':req.body.name,
+        'email':req.body.email,
+        'status':`active`,
+    }
+    if(!newMember.name||!newMember.email)  res.status(400).json({msg:'Bad Request'})
+       
+    user.push(newMember)
+    res.json(user)
+})
 
+//Updating a user
+
+router.put('/:id',(req,res)=>{
+    const found=user.some(user=>user.id==req.params.id)
+    if(!found) res.status(400).json(`Bad request :- id with ${req.params.id} not exists`)
+    const updtdUser=req.body
+    if(!updtdUser.name||!updtdUser.email)  res.status(400).json({msg:'Bad Request'})    
+    user.map((user)=>{
+        if(user.id==req.params.id)
+        {
+            user.name=updtdUser.name,
+            user.email=updtdUser.email
+        } 
+    })
+    res.json({msg: `User updated`,user})
+})
+
+//Deleting an user
+
+router.delete('/:id',(req,res)=>{
+    const found=user.some(user=>user.id==req.params.id)
+    if(!found) res.status(400).json(`Bad request :- id with ${req.params.id} not exists`)
+    user.map((users)=>{
+        if(users.id==req.params.id)
+        {
+            const index=user.indexOf(users)
+            user.splice(index, 1)
+        } 
+    })
+    res.json({msg: `User Deleted`,user})
+})
 
 module.exports=router

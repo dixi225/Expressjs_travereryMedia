@@ -8,11 +8,16 @@ const port=process.env.PORT||5000
 //     res.sendFile(path.join(__dirname,'public','index.html'))
 // })
 
+//Body parser Middlewares????
+app.use(express.json())
+app.use(express.urlencoded({extended:false}))
 
 //Setting static folder
 app.use(express.static(path.join(__dirname,'public')))
 
 //user api routes
 app.use('/api/members',router)
+
+
 
 app.listen(port,()=>`Server running at port ${port}`)   
